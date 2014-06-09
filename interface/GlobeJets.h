@@ -36,10 +36,25 @@ class GlobeJets {
   Float_t jet_area[MAX_JETS];
   Float_t jet_emfrac[MAX_JETS];
   Float_t jet_hadfrac[MAX_JETS];
+  Float_t jet_chargedMultiplicity[MAX_JETS];
+  Float_t jet_neutralMultiplicity[MAX_JETS];
+  Float_t jet_chadfrac[MAX_JETS];
+  Float_t jet_nhadfrac[MAX_JETS];
+  Float_t jet_phofrac[MAX_JETS];
+  Float_t jet_mufrac[MAX_JETS];
+  Float_t jet_elefrac[MAX_JETS];
 
   Float_t jet_pull_dy[MAX_JETS];
   Float_t jet_pull_dphi[MAX_JETS];
   Float_t jet_erescale[MAX_JETS];
+
+  Float_t jet_JECUnc[MAX_JETS];  
+  Float_t jet_leadTrackPt[MAX_JETS];  
+  Float_t jet_softLeptPt[MAX_JETS];  
+  Float_t jet_softLeptPtRel[MAX_JETS];  
+  Float_t jet_softLeptDR[MAX_JETS];  
+  Float_t jet_softLeptIdLooseMu[MAX_JETS];  
+  Float_t jet_softLeptIdEle95[MAX_JETS];  
 
   // Jet ID MVA variables
   Float_t jet_dRMean[MAX_JETS];
@@ -99,6 +114,7 @@ class GlobeJets {
 	Float_t jet_secVtxPt[MAX_JETS];
 	Float_t jet_secVtx3dL[MAX_JETS];
 	Float_t jet_secVtx3deL[MAX_JETS];
+	Float_t jet_secVtxM[MAX_JETS];
 
   Int_t jet_ntk[MAX_JETS];
   Int_t jet_ncalotw[MAX_JETS];

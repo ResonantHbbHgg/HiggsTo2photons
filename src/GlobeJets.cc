@@ -14,6 +14,11 @@
 
 #include "DataFormats/JetReco/interface/JetTracksAssociation.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 
 
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
@@ -90,6 +95,34 @@ void GlobeJets::defineBranch(GlobeAnalyzer* ana) {
   sprintf(a1, "jet_%s_hadfrac", nome);
   sprintf(a2, "jet_%s_hadfrac[jet_%s_n]/F", nome, nome);
   ana->Branch(a1, &jet_hadfrac, a2);
+
+  sprintf(a1, "jet_%s_chargedMultiplicity", nome);
+  sprintf(a2, "jet_%s_chargedMultiplicity[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_chargedMultiplicity, a2);
+
+  sprintf(a1, "jet_%s_neutralMultiplicity", nome);
+  sprintf(a2, "jet_%s_neutralMultiplicity[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_neutralMultiplicity, a2);
+
+  sprintf(a1, "jet_%s_chadfrac", nome);
+  sprintf(a2, "jet_%s_chadfrac[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_chadfrac, a2);
+
+  sprintf(a1, "jet_%s_nhadfrac", nome);
+  sprintf(a2, "jet_%s_nhadfrac[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_nhadfrac, a2);
+
+  sprintf(a1, "jet_%s_phofrac", nome);
+  sprintf(a2, "jet_%s_phofrac[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_phofrac, a2);
+
+  sprintf(a1, "jet_%s_mufrac", nome);
+  sprintf(a2, "jet_%s_mufrac[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_mufrac, a2);
+
+  sprintf(a1, "jet_%s_elefrac", nome);
+  sprintf(a2, "jet_%s_elefrac[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_elefrac, a2);
 
   sprintf(a1, "jet_%s_ntk", nome);
   sprintf(a2, "jet_%s_ntk[jet_%s_n]/I", nome, nome);
@@ -283,7 +316,39 @@ void GlobeJets::defineBranch(GlobeAnalyzer* ana) {
   sprintf(a2, "jet_%s_secVtx3deL[jet_%s_n]/F", nome, nome);
   ana->Branch(a1, &jet_secVtx3deL, a2);
 
- 
+  sprintf(a1, "jet_%s_secVtxM", nome);
+  sprintf(a2, "jet_%s_secVtxM[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_secVtxM, a2);
+
+  sprintf(a1, "jet_%s_JECUnc", nome);
+  sprintf(a2, "jet_%s_JECUnc[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_JECUnc, a2);
+
+  sprintf(a1, "jet_%s_leadTrackPt", nome);
+  sprintf(a2, "jet_%s_leadTrackPt[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_leadTrackPt, a2);
+
+  sprintf(a1, "jet_%s_softLeptPt", nome);
+  sprintf(a2, "jet_%s_softLeptPt[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_softLeptPt, a2);
+
+  sprintf(a1, "jet_%s_softLeptPtRel", nome);
+  sprintf(a2, "jet_%s_softLeptPtRel[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_softLeptPtRel, a2);
+
+  sprintf(a1, "jet_%s_softLeptDR", nome);
+  sprintf(a2, "jet_%s_softLeptDR[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_softLeptDR, a2);
+
+  sprintf(a1, "jet_%s_softLeptIdLooseMu", nome);
+  sprintf(a2, "jet_%s_softLeptIdLooseMu[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_softLeptIdLooseMu, a2);
+
+  sprintf(a1, "jet_%s_softLeptIdEle95", nome);
+  sprintf(a2, "jet_%s_softLeptIdEle95[jet_%s_n]/F", nome, nome);
+  ana->Branch(a1, &jet_softLeptIdEle95, a2);
+
+
   for(unsigned int imva=0; imva<jetMVAAlgos.size(); imva++){
     
       std::string mvalabel = (jetMVAAlgos.at(imva)).getParameter<std::string>("label");
@@ -371,7 +436,14 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       jet_area[jet_n] = j->jetArea();
       jet_emfrac[jet_n] = j->emEnergyFraction();
       jet_hadfrac[jet_n] = j->energyFractionHadronic();
-      
+      //jet_chargedMultiplicity[jet_n] = j->chargedMultiplicity();
+      //jet_neutralMultiplicity[jet_n] = j->neutralMultiplicity();
+      //jet_chadfrac[jet_n] = j->chargedHadronEnergyFraction();
+      //jet_nhadfrac[jet_n] = j->neutralHadronEnergyFraction();
+      //jet_phofrac[jet_n] = j->photonEnergyFraction();
+      //jet_mufrac[jet_n] = j->muonEnergyFraction();
+      //jet_elefrac[jet_n] = j->electronEnergyFraction();
+
       jet_erescale[jet_n] = 1;
 
       // Tracks and CaloTowers
@@ -481,6 +553,11 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       pfak5corr = pfak5corrmc;
     }
 
+    edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+    iSetup.get<JetCorrectionsRecord>().get("AK5PFchs",JetCorParColl);
+    JetCorrectionUncertainty *jecUnc=0;
+    JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+    jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
     PileupJetIdAlgo* jetMVACalculator = 0;
     if(algos_.size()>0) jetMVACalculator = algos_[0];
@@ -532,6 +609,14 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       //if(correctedJet->pt() < 1) continue;
       
+      if (fabs(correctedJet->eta()) < 5.2) {
+        jecUnc->setJetEta(correctedJet->eta());
+        jecUnc->setJetPt(correctedJet->pt()); // here you must use the CORRECTED jet pt
+        jet_JECUnc[jet_n] = jecUnc->getUncertainty(true);
+      } else {
+        jet_JECUnc[jet_n] = -1.;
+      }
+
       pat::strbitset ret = (*pfLooseId).getBitTemplate();
       jet_pfloose[jet_n] = (*pfLooseId)(*j, ret);
       
@@ -542,6 +627,86 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       jet_area[jet_n] = correctedJet->jetArea();
       jet_emfrac[jet_n] = correctedJet->chargedEmEnergyFraction() + correctedJet->neutralEmEnergyFraction() + correctedJet->chargedMuEnergyFraction();
       jet_hadfrac[jet_n] = correctedJet->chargedHadronEnergyFraction() + correctedJet->neutralHadronEnergyFraction();
+      jet_chargedMultiplicity[jet_n] = correctedJet->chargedMultiplicity();
+      jet_neutralMultiplicity[jet_n] = correctedJet->neutralMultiplicity();
+      jet_chadfrac[jet_n] = correctedJet->chargedHadronEnergyFraction();
+      jet_nhadfrac[jet_n] = correctedJet->neutralHadronEnergyFraction();
+      jet_phofrac[jet_n] = correctedJet->photonEnergyFraction();
+      jet_mufrac[jet_n] = correctedJet->muonEnergyFraction();
+      jet_elefrac[jet_n] = correctedJet->electronEnergyFraction();
+
+      jet_leadTrackPt[jet_n] = -99.;
+      jet_secVtxPt[jet_n]	= -99.;
+      jet_secVtx3dL[jet_n]	= -99.;
+      jet_secVtx3deL[jet_n]	= -99.;
+      jet_secVtxM[jet_n]	= -99.;
+      jet_softLeptPt[jet_n]     = -99.;
+      jet_softLeptPtRel[jet_n]  = -99.; 
+      jet_softLeptDR[jet_n]     = -99.;
+      jet_softLeptIdLooseMu[jet_n] = -99.;
+      jet_softLeptIdEle95[jet_n]= -99.;
+
+      std::vector <reco::PFCandidatePtr> constituents = correctedJet->getPFConstituents ();
+      for (unsigned ic = 0; ic < constituents.size (); ++ic) {
+	if ( constituents[ic]->particleId() > 3 ) continue;
+	reco::TrackRef trackRef = constituents[ic]->trackRef();
+	if ( trackRef.isNonnull() ) { if(trackRef->pt() > jet_leadTrackPt[jet_n]) jet_leadTrackPt[jet_n] = trackRef->pt(); }
+      }
+
+      jet_nSecondaryVertices[jet_n]=(*secondaryVertexTagInfo)[jet_n].nVertices();
+      if( jet_nSecondaryVertices[jet_n] > 0 ){
+	//const reco::Vertex &sv = (*secondaryVertexTagInfo)[jet_n].secondaryVertex(0);
+	//TLorentzVector v(sv.x(), sv.y(), sv.z());
+	jet_secVtxPt[jet_n]	= (*secondaryVertexTagInfo)[jet_n].secondaryVertex(0).p4().pt();//v.Pt();
+	jet_secVtx3dL[jet_n]	= (*secondaryVertexTagInfo)[jet_n].flightDistance(0).value();
+	jet_secVtx3deL[jet_n]	= (*secondaryVertexTagInfo)[jet_n].flightDistance(0).error();
+	jet_secVtxM[jet_n]	= (*secondaryVertexTagInfo)[jet_n].secondaryVertex(0).p4().mass();
+      }
+
+      edm::Handle<edm::View<reco::Candidate> > muonNoCutsHandle;
+      iEvent.getByLabel(edm::InputTag("muons"), muonNoCutsHandle);//muonNoCutsLabel_ = edm::InputTag("muons");
+      edm::View<reco::Candidate> muonsNoCuts = *muonNoCutsHandle;
+      int isSemiLept = 0;
+      for(edm::View<reco::Candidate>::const_iterator mu = muonsNoCuts.begin(); mu!=muonsNoCuts.end() && isSemiLept!=1; ++mu){
+        const pat::Muon& m = static_cast <const pat::Muon&> (*mu);
+        float Smpt = m.pt();
+        float Smeta = m.eta();
+        float Smphi = m.phi();
+        float SmJdR = deltaR(Smeta, Smphi, correctedJet->eta(), correctedJet->phi());
+        if   ( Smpt > 5 && SmJdR < 0.5) { //lep_ptCutForBjets_ = 5 GeV
+          isSemiLept=1;
+          jet_softLeptDR[jet_n] = SmJdR;
+          jet_softLeptPt[jet_n] = Smpt;
+          TLorentzVector jvec (correctedJet->p4().X(), correctedJet->p4().Y(), correctedJet->p4().Z(), correctedJet->p4().T());
+          TVector3 mvec ( m.p4().Vect().X(), m.p4().Vect().Y(), m.p4().Vect().Z()  );
+          jet_softLeptPtRel[jet_n] = jvec.Perp(  mvec );
+          jet_softLeptIdLooseMu[jet_n] = m.muonID("TMLastStationLoose");
+        }
+      }
+      edm::Handle<edm::View<reco::Candidate> > eleNoCutsHandle;
+      iEvent.getByLabel(edm::InputTag("gsfElectrons"), eleNoCutsHandle);//eleNoCutsLabel_ = edm::InputTag("gsfElectrons");
+      edm::View<reco::Candidate> elesNoCuts = *eleNoCutsHandle;
+      for(edm::View<reco::Candidate>::const_iterator ele = elesNoCuts.begin(); ele!=elesNoCuts.end() && isSemiLept!=1; ++ele){
+        const pat::Electron& e = static_cast <const pat::Electron&> (*ele);
+        float Smpt = e.pt();
+        float Smeta = e.eta();
+        float Smphi = e.phi();
+        float SmJdR = deltaR(Smeta, Smphi, correctedJet->eta(), correctedJet->phi());
+        if   ( Smpt> 5 && SmJdR <0.5) { //lep_ptCutForBjets_ = 5 GeV
+          isSemiLept=1;
+          jet_softLeptDR[jet_n] = SmJdR;
+          jet_softLeptPt[jet_n] = Smpt;
+          TLorentzVector jvec (correctedJet->p4().X(), correctedJet->p4().Y(), correctedJet->p4().Z(), correctedJet->p4().T());
+          TVector3 mvec ( e.p4().Vect().X(), e.p4().Vect().Y(), e.p4().Vect().Z()  );
+          jet_softLeptPtRel[jet_n] = jvec.Perp(  mvec );
+          if (
+              ( fabs(Smeta)<2.5 && !( fabs(Smeta)>1.4442 && fabs(Smeta)<1.566))  &&
+              (( fabs(Smeta)>1.566  && e.sigmaIetaIeta()<0.01 && fabs(e.deltaPhiSuperClusterTrackAtVtx())<0.8 && fabs(e.deltaEtaSuperClusterTrackAtVtx())<0.007 ) ||
+               ( fabs(Smeta)<1.4442 && e.sigmaIetaIeta()<0.03 && fabs(e.deltaPhiSuperClusterTrackAtVtx())<0.7 && fabs(e.deltaEtaSuperClusterTrackAtVtx())<0.01 ))     )
+            jet_softLeptIdEle95[jet_n] = 1;
+        }
+      }
+
 
       if (debug_level > 9 && jet_n<20) std::cout<<"post "<<correctedJet->energy()<<std::endl;
 
@@ -571,19 +736,6 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         jet_nCharged[jet_n]=jetIdentifer_vars.nCharged();
         jet_dR2Mean[jet_n]=jetIdentifer_vars.dR2Mean();
         jet_betaStarClassic[jet_n]=jetIdentifer_vars.betaStarClassic();
-				jet_nSecondaryVertices[jet_n]=(*secondaryVertexTagInfo)[jet_n].nVertices();
-				if( jet_nSecondaryVertices[jet_n] > 0 )
-				{
-					const reco::Vertex &sv = (*secondaryVertexTagInfo)[jet_n].secondaryVertex(0);
-					TLorentzVector v(sv.x(), sv.y(), sv.z());
-					jet_secVtxPt[jet_n]		= v.Pt();
-					jet_secVtx3dL[jet_n]	= (*secondaryVertexTagInfo)[jet_n].flightDistance(0).value();
-					jet_secVtx3deL[jet_n]	= (*secondaryVertexTagInfo)[jet_n].flightDistance(0).error();
-				} else {
-					jet_secVtxPt[jet_n]		= -1.;
-					jet_secVtx3dL[jet_n]	= -1.;
-					jet_secVtx3deL[jet_n]	= -1.;
-				}
 
         for(unsigned int imva=0; imva<jetMVAAlgos.size(); imva++){
           PileupJetIdAlgo* ialgo = (algos_[imva]);
