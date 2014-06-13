@@ -96,14 +96,6 @@ void GlobeJets::defineBranch(GlobeAnalyzer* ana) {
   sprintf(a2, "jet_%s_hadfrac[jet_%s_n]/F", nome, nome);
   ana->Branch(a1, &jet_hadfrac, a2);
 
-  sprintf(a1, "jet_%s_chargedMultiplicity", nome);
-  sprintf(a2, "jet_%s_chargedMultiplicity[jet_%s_n]/F", nome, nome);
-  ana->Branch(a1, &jet_chargedMultiplicity, a2);
-
-  sprintf(a1, "jet_%s_neutralMultiplicity", nome);
-  sprintf(a2, "jet_%s_neutralMultiplicity[jet_%s_n]/F", nome, nome);
-  ana->Branch(a1, &jet_neutralMultiplicity, a2);
-
   sprintf(a1, "jet_%s_chadfrac", nome);
   sprintf(a2, "jet_%s_chadfrac[jet_%s_n]/F", nome, nome);
   ana->Branch(a1, &jet_chadfrac, a2);
@@ -436,8 +428,6 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       jet_area[jet_n] = j->jetArea();
       jet_emfrac[jet_n] = j->emEnergyFraction();
       jet_hadfrac[jet_n] = j->energyFractionHadronic();
-      //jet_chargedMultiplicity[jet_n] = j->chargedMultiplicity();
-      //jet_neutralMultiplicity[jet_n] = j->neutralMultiplicity();
       //jet_chadfrac[jet_n] = j->chargedHadronEnergyFraction();
       //jet_nhadfrac[jet_n] = j->neutralHadronEnergyFraction();
       //jet_phofrac[jet_n] = j->photonEnergyFraction();
@@ -627,8 +617,6 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       jet_area[jet_n] = correctedJet->jetArea();
       jet_emfrac[jet_n] = correctedJet->chargedEmEnergyFraction() + correctedJet->neutralEmEnergyFraction() + correctedJet->chargedMuEnergyFraction();
       jet_hadfrac[jet_n] = correctedJet->chargedHadronEnergyFraction() + correctedJet->neutralHadronEnergyFraction();
-      jet_chargedMultiplicity[jet_n] = correctedJet->chargedMultiplicity();
-      jet_neutralMultiplicity[jet_n] = correctedJet->neutralMultiplicity();
       jet_chadfrac[jet_n] = correctedJet->chargedHadronEnergyFraction();
       jet_nhadfrac[jet_n] = correctedJet->neutralHadronEnergyFraction();
       jet_phofrac[jet_n] = correctedJet->photonEnergyFraction();
