@@ -1081,7 +1081,7 @@ bool GlobeJets::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       jet_n++;
       
     }
-    
+    delete jecUnc;
   }
   
   return true;
